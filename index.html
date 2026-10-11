@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Moneta — Personal Finance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="authScreen" class="auth-screen">
+    <div class="auth-brand"><span class="brand-mark">m</span><span>moneta</span></div>
+    <section class="auth-card">
+      <div class="auth-kicker">YOUR MONEY, IN FOCUS</div>
+      <h1 id="authTitle">Welcome back</h1>
+      <p class="muted" id="authSubtitle">Sign in to see your financial overview.</p>
+      <form id="authForm">
+        <label for="authName" id="nameLabel" class="hidden">Full name</label>
+        <input id="authName" class="hidden" type="text" placeholder="Full name" autocomplete="name" />
+        <label for="authEmail">Email address</label>
+        <input id="authEmail" type="email" placeholder="you@example.com" autocomplete="email" required />
+        <label for="authPassword">Password</label>
+        <input id="authPassword" type="password" placeholder="At least 6 characters" minlength="6" autocomplete="current-password" required />
+        <p id="authError" class="form-error" aria-live="polite"></p>
+        <button class="btn btn-primary btn-wide" type="submit" id="authSubmit">Sign in</button>
+      </form>
+      <p class="auth-switch"><span id="switchPrompt">New to Moneta?</span> <button type="button" class="text-button" id="switchAuth">Create an account</button></p>
+      <p class="auth-note">Demo mode · Your data stays in this browser</p>
+    </section>
+    <p class="auth-footer">A calmer way to manage your money.</p>
+  </div>
+
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="Moneta home"><span class="brand-mark">m</span><span>moneta</span></a>
+      <div class="side-label">WORKSPACE</div>
+      <nav class="side-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-view="overview"><span class="nav-icon">▦</span> Overview</button>
+        <button class="nav-item" data-view="transactions"><span class="nav-icon">↕</span> Transactions</button>
+        <button class="nav-item" data-view="analytics"><span class="nav-icon">◔</span> Analytics</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="help-card"><span class="help-dot"></span><div><strong>Stay on track</strong><p>Small steps add up.</p></div></div>
+        <button id="logoutBtn" class="nav-item logout"><span class="nav-icon">↪</span> Sign out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark">m</span><span>moneta</span></div>
+        <div class="breadcrumb"><span>Workspace</span><span class="crumb-slash">/</span><strong id="pageName">Overview</strong></div>
+        <div class="top-actions">
+          <div class="date-chip"><span class="status-dot"></span><span id="todayLabel">Today</span></div>
+          <div class="avatar" id="avatar">A</div>
+        </div>
+      </header>
+
+      <section class="page-heading">
+        <div><p class="eyebrow">PERSONAL FINANCE</p><h1 id="greeting">Good morning</h1><p class="muted">Here’s what’s happening with your money.</p></div>
+        <button class="btn btn-primary" id="addTopBtn"><span class="plus">＋</span> Add transaction</button>
+      </section>
+
+      <section class="view-panel" id="overviewView">
+        <div class="stats-grid">
+          <article class="stat-card balance-card">
+            <div class="stat-top"><span>Total balance</span><span class="stat-icon">◈</span></div>
+            <div class="stat-value" id="totalBalance">₹0</div>
+            <div class="stat-foot"><span class="tiny-dot green"></span><span>Income minus expenses</span></div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Total income</span><span class="stat-icon income-icon">↗</span></div>
+            <div class="stat-value" id="totalIncome">₹0</div>
+            <div class="stat-foot"><span class="trend positive">↗</span><span>Money coming in</span></div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Total expenses</span><span class="stat-icon expense-icon">↘</span></div>
+            <div class="stat-value" id="totalExpense">₹0</div>
+            <div class="stat-foot"><span class="trend neutral">↗</span><span>Money going out</span></div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Savings rate</span><span class="stat-icon savings-icon">％</span></div>
+            <div class="stat-value" id="savingsRate">0%</div>
+            <div class="stat-foot"><span>Of your total income</span></div>
+          </article>
+        </div>
+
+        <div class="content-grid">
+          <article class="panel cashflow-panel">
+            <div class="panel-heading"><div><h2>Cash flow</h2><p class="muted">Your income and expenses</p></div><span class="mini-pill">All time</span></div>
+            <div class="cashflow-legend"><span><i class="legend-dot income-dot"></i>Income</span><span><i class="legend-dot expense-dot"></i>Expenses</span></div>
+            <div class="chart-wrap bar-chart-wrap"><canvas id="cashflowChart" aria-label="Income and expenses bar chart"></canvas></div>
+            <div class="chart-caption"><span>Based on your transactions</span><strong id="netFlow">₹0 net</strong></div>
+          </article>
+          <article class="panel breakdown-panel">
+            <div class="panel-heading"><div><h2>Expense breakdown</h2><p class="muted">Where your money goes</p></div><span class="panel-symbol">◔</span></div>
+            <div class="donut-area"><canvas id="expenseChart" aria-label="Expenses by category pie chart"></canvas><div class="donut-center"><span>Total spent</span><strong id="donutExpenseTotal">₹0</strong></div></div>
+            <div id="expenseLegend" class="chart-legend"></div>
+          </article>
+        </div>
+
+        <div class="content-grid lower-grid">
+          <article class="panel transactions-panel">
+            <div class="panel-heading"><div><h2>Recent transactions</h2><p class="muted">Your latest activity</p></div><button class="link-button" data-goto="transactions">View all <span>→</span></button></div>
+            <div id="recentTransactions" class="transaction-list"></div>
+          </article>
+          <article class="panel income-breakdown-panel">
+            <div class="panel-heading"><div><h2>Income sources</h2><p class="muted">How you earn</p></div><span class="panel-symbol income-panel-symbol">↗</span></div>
+            <div class="donut-area income-donut"><canvas id="incomeChart" aria-label="Income by category pie chart"></canvas><div class="donut-center"><span>Total income</span><strong id="donutIncomeTotal">₹0</strong></div></div>
+            <div id="incomeLegend" class="chart-legend"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view-panel hidden" id="transactionsView">
+        <div class="panel table-panel">
+          <div class="panel-heading transaction-page-heading"><div><h2>All transactions</h2><p class="muted">Manage your income and expenses.</p></div><button class="btn btn-primary" id="addTransactionsBtn">＋ Add transaction</button></div>
+          <div class="filters">
+            <div class="search-wrap"><span>⌕</span><input id="searchInput" type="search" placeholder="Search transactions..." /></div>
+            <select id="typeFilter" aria-label="Filter by type"><option value="all">All types</option><option value="income">Income</option><option value="expense">Expenses</option></select>
+            <select id="categoryFilter" aria-label="Filter by category"><option value="all">All categories</option></select>
+          </div>
+          <div class="table-scroll"><table><thead><tr><th>TRANSACTION</th><th>CATEGORY</th><th>DATE</th><th>TYPE</th><th class="amount-cell">AMOUNT</th><th></th></tr></thead><tbody id="transactionRows"></tbody></table></div>
+          <div id="emptyTransactions" class="empty-state hidden"><span class="empty-icon">↕</span><strong>No transactions found</strong><p>Try another search or add a transaction.</p></div>
+        </div>
+      </section>
+
+      <section class="view-panel hidden" id="analyticsView">
+        <div class="analytics-grid">
+          <article class="panel analytics-card"><div class="panel-heading"><div><h2>Expenses by category</h2><p class="muted">Your spending distribution</p></div></div><div class="analytics-donut"><canvas id="analyticsExpenseChart"></canvas></div><div id="analyticsExpenseLegend" class="chart-legend"></div></article>
+          <article class="panel analytics-card"><div class="panel-heading"><div><h2>Income by source</h2><p class="muted">Your earning distribution</p></div></div><div class="analytics-donut"><canvas id="analyticsIncomeChart"></canvas></div><div id="analyticsIncomeLegend" class="chart-legend"></div></article>
+          <article class="panel analytics-card wide-analytics"><div class="panel-heading"><div><h2>Income vs expenses</h2><p class="muted">Compare your total money in and out</p></div></div><div class="chart-wrap analytics-bars"><canvas id="analyticsCashflowChart"></canvas></div></article>
+        </div>
+      </section>
+      <footer class="app-footer">Made for clarity, built for your everyday finances.</footer>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="transactionModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <section class="modal-card">
+      <div class="modal-heading"><div><p class="eyebrow">YOUR MONEY</p><h2 id="modalTitle">Add transaction</h2></div><button class="icon-button" id="closeModal" aria-label="Close dialog">×</button></div>
+      <form id="transactionForm">
+        <div class="type-toggle"><button type="button" class="type-option selected" data-type="expense">Expense</button><button type="button" class="type-option" data-type="income">Income</button></div>
+        <input type="hidden" id="transactionType" value="expense" />
+        <label for="transactionTitle">Transaction name</label><input id="transactionTitle" type="text" placeholder="e.g. Grocery shopping" maxlength="70" required />
+        <div class="form-row"><div><label for="transactionAmount">Amount (₹)</label><input id="transactionAmount" type="number" min="1" step="0.01" placeholder="0.00" required /></div><div><label for="transactionCategory">Category</label><select id="transactionCategory" required></select></div></div>
+        <label for="transactionDate">Date</label><input id="transactionDate" type="date" required />
+        <label for="transactionNote">Note <span class="optional">(optional)</span></label><textarea id="transactionNote" rows="2" placeholder="Add a short note..."></textarea>
+        <p id="transactionError" class="form-error" aria-live="polite"></p>
+        <div class="modal-actions"><button type="button" class="btn btn-secondary" id="cancelModal">Cancel</button><button type="submit" class="btn btn-primary">Save transaction</button></div>
+      </form>
+    </section>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="./script.js"></script>
+</body>
+</html>
